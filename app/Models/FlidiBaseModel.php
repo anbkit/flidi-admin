@@ -14,4 +14,5 @@ use Illuminate\Database\Eloquent\Model;
 class FlidiBaseModel extends Model{
 
     protected $connection = 'flidi';
+    protected $guarded = ['id'];
 }
