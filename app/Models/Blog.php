@@ -13,4 +13,8 @@ class Blog extends FlidiBaseModel{
     protected $table = 'blogs';
     public $primaryKey = 'blog_id';
 
+    public function user(){
+        return $this->hasOne(WebUser::class,'user_id','user_id');
+    }
+
 }

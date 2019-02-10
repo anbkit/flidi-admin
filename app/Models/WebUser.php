@@ -11,7 +11,7 @@ namespace App\Models;
 
 class WebUser extends FlidiBaseModel
 {
-    protected $table = 'web_users';
+    protected $table = 'users';
     public $primaryKey = 'user_id';
 
 }

@@ -11,9 +11,16 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+function is_json($string) {
+    json_decode($string);
+    return (json_last_error() == JSON_ERROR_NONE);
+}
+class BlogController extends Controller{
 
-class BlogController extends Controller
-{
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create(Request $request){
         $filesPath = [];
         $path = $request->get('type','blogs').'/'.date('FY').'/';
@@ -41,4 +48,30 @@ class BlogController extends Controller
         ]);
     }
 
+
+    /**
+     * @param $location_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getList($location_id){
+        $results = Blog::where(['location_id'=>$location_id])->orderBy('blog_id','desc')->with('user')->get();
+        $items = [];
+        foreach ($results as $result){
+            if(is_json($result['image'])){
+                $tmp_images = json_decode($result['image'],true);
+                foreach ($tmp_images as &$tmp_image){
+                    $tmp_image = url('/').'/storage/'.$tmp_image;
+                }
+                $result['image'] = $tmp_images;
+            }
+            else{
+                $result['image'] = array_wrap($result['image']);
+            }
+            $result['created_at_str'] = date('d-m-Y H:i',strtotime($result['created_at']));
+            $items[] = $result;
+        }
+        return response()->json([
+            'items'=>$items
+        ]);
+    }
 }

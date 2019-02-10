@@ -18,3 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/blog/create','BlogController@create');
+Route::get('/blog/list/{location_id}','BlogController@getList')->where(['location_id'=>'[0-9]+']);
