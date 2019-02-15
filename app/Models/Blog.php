@@ -17,4 +17,12 @@ class Blog extends FlidiBaseModel{
         return $this->hasOne(WebUser::class,'user_id','user_id');
     }
 
+
+    public function comments(){
+        return $this->hasMany(Comment::class,'blog_id','blog_id');
+    }
+
+    public function likes(){
+        return $this->hasMany(Like::class,'blog_id','blog_id');
+    }
 }

@@ -9,12 +9,10 @@
 
 namespace App\Http\Controllers;
 use App\Models\Blog;
+use App\Models\Comment;
+use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-function is_json($string) {
-    json_decode($string);
-    return (json_last_error() == JSON_ERROR_NONE);
-}
 class BlogController extends Controller{
 
     /**
@@ -54,7 +52,7 @@ class BlogController extends Controller{
      * @return \Illuminate\Http\JsonResponse
      */
     public function getList($location_id){
-        $results = Blog::where(['location_id'=>$location_id])->orderBy('blog_id','desc')->with('user')->get();
+        $results = Blog::where(['location_id'=>$location_id])->orderBy('blog_id','desc')->with('user')->with('comments')->with('likes')->get();
         $items = [];
         foreach ($results as $result){
             if(is_json($result['image'])){
@@ -72,6 +70,72 @@ class BlogController extends Controller{
         }
         return response()->json([
             'items'=>$items
+        ]);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function postComment($blog_id,Request $request){
+        $inputs = $request->only([
+            'detail',
+            'user_id',
+        ]);
+        $inputs['blog_id'] = $blog_id;
+        return response()->json([
+            'result'=>Comment::create($inputs)
+        ]);
+    }
+
+    /**
+     * @param $blog_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getComments($blog_id){
+        $results = Comment::where(['blog_id'=>$blog_id])->orderBy('comment_id','desc')->with('user')->get();
+        return response()->json([
+            'items'=>$results
+        ]);
+    }
+
+    /**
+     * @param $blog_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getLikes($blog_id){
+        $results = Like::where(['blog_id'=>$blog_id])->orderBy('like_id','desc')->get();
+        return response()->json([
+            'items'=>$results
+        ]);
+    }
+
+    /**
+     * @param $blog_id
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function like($blog_id,Request $request){
+        $inputs = $request->only([
+            'user_id',
+        ]);
+        $inputs['blog_id'] = $blog_id;
+        return response()->json([
+            'result'=>Like::create($inputs)
+        ]);
+    }
+
+
+    /**
+     * @param $blog_id
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function unLike($blog_id,Request $request){
+        $result = Like::where(['blog_id'=>$blog_id,'user_id'=>$request->input('user_id')])->delete();
+        return response()->json([
+            'result'=>$result
         ]);
     }
 }
