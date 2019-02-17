@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use App\Models\Comment;
 use App\Models\Like;
+use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 class BlogController extends Controller{
@@ -42,8 +43,10 @@ class BlogController extends Controller{
             'rating'
         ]);
         $inputs['image'] = json_encode($filesPath);
+        $result = Blog::create($inputs);
+        $this->updateStatistic($inputs['location_id']);
         return response()->json([
-            'result'=>Blog::create($inputs)
+            'result'=>$result
         ]);
     }
 
@@ -79,12 +82,36 @@ class BlogController extends Controller{
             'rating'
         ]);
         $inputs['image'] = json_encode($filesPath);
+        $result = $blog->update($inputs);
+        $this->updateStatistic($blog['location_id']);
         return response()->json([
-            'result'=>$blog->update($inputs)
+            'result'=> $result
         ]);
     }
 
 
+    public function updateStatistic($location_id){
+        $blogs = Blog::where(['location_id'=>$location_id])->get();
+        $total_blog = $blogs->count();
+        $total_user = 0;
+        foreach ($blogs as $blog){
+            $users[$blog['user_id']] = $blog;
+        }
+        $total_user = count($users);
+        $total_rating = 0;
+        $rating = 0;
+        foreach ($users as $user){
+            $total_rating = $total_rating + $user['rating'];
+        }
+        if($total_user) {
+            $rating = $total_rating / $total_user;
+        }
+        Location::where(['location_id'=>$location_id])->update([
+            'total_user'=>$total_user,
+            'rating'=>$rating,
+            'total_blog'=>$total_blog
+        ]);
+    }
 
     /**
      * @param $location_id
@@ -211,9 +238,11 @@ class BlogController extends Controller{
     public function delete($blog_id){
         $blog = Blog::find($blog_id);
         if($blog){
+            $location_id = $blog['location_id'];
             $blog->comments()->delete();
             $blog->likes()->delete();
             $blog->delete();
+            $this->updateStatistic($location_id);
         }
         return response()->json([
             'result'=>true
