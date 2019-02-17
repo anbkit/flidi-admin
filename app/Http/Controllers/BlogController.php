@@ -38,7 +38,8 @@ class BlogController extends Controller{
             'description',
             'detail',
             'user_id',
-            'location_id'
+            'location_id',
+            'rating'
         ]);
         $inputs['image'] = json_encode($filesPath);
         return response()->json([
@@ -46,13 +47,77 @@ class BlogController extends Controller{
         ]);
     }
 
+    /**
+     * @param $blog_id
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update($blog_id,Request $request){
+        $blog = Blog::find($blog_id);
+        if(!$blog){
+            return response()->json([
+                'result'=>false
+            ]);
+        }
+        $filesPath = [];
+        $path = $request->get('type','blogs').'/'.date('FY').'/';
+        $files = Arr::wrap($request->file('files'));
+        foreach ($files as $file) {
+            $filename =str_random(20);
+            $file->storeAs(
+                $path,
+                $filename.'.'.$file->getClientOriginalExtension(),
+                config('voyager.storage.disk', 'public')
+            );
+
+            array_push($filesPath,$path.$filename.'.'.$file->getClientOriginalExtension());
+        }
+        $inputs = $request->only([
+            'blog_title',
+            'description',
+            'detail',
+            'rating'
+        ]);
+        $inputs['image'] = json_encode($filesPath);
+        return response()->json([
+            'result'=>$blog->update($inputs)
+        ]);
+    }
+
+
 
     /**
      * @param $location_id
      * @return \Illuminate\Http\JsonResponse
      */
     public function getList($location_id){
-        $results = Blog::where(['location_id'=>$location_id])->orderBy('blog_id','desc')->with('user')->with('comments')->with('likes')->get();
+        $results = Blog::where(['location_id'=>$location_id])->orderBy('blog_id','desc')->with('user')->with('comments')->with('location')->with('likes')->get();
+        $items = [];
+        foreach ($results as $result){
+            if(is_json($result['image'])){
+                $tmp_images = json_decode($result['image'],true);
+                foreach ($tmp_images as &$tmp_image){
+                    $tmp_image = url('/').'/storage/'.$tmp_image;
+                }
+                $result['image'] = $tmp_images;
+            }
+            else{
+                $result['image'] = array_wrap($result['image']);
+            }
+            $result['created_at_str'] = date('d-m-Y H:i',strtotime($result['created_at']));
+            $items[] = $result;
+        }
+        return response()->json([
+            'items'=>$items
+        ]);
+    }
+
+    /**
+     * @param $user_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getListByUser($user_id){
+        $results = Blog::where(['user_id'=>$user_id])->orderBy('blog_id','desc')->with('user')->with('comments')->with('likes')->with('location')->get();
         $items = [];
         foreach ($results as $result){
             if(is_json($result['image'])){
@@ -136,6 +201,22 @@ class BlogController extends Controller{
         $result = Like::where(['blog_id'=>$blog_id,'user_id'=>$request->input('user_id')])->delete();
         return response()->json([
             'result'=>$result
+        ]);
+    }
+
+    /**
+     * @param $blog_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete($blog_id){
+        $blog = Blog::find($blog_id);
+        if($blog){
+            $blog->comments()->delete();
+            $blog->likes()->delete();
+            $blog->delete();
+        }
+        return response()->json([
+            'result'=>true
         ]);
     }
 }

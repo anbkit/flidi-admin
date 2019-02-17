@@ -25,4 +25,8 @@ class Blog extends FlidiBaseModel{
     public function likes(){
         return $this->hasMany(Like::class,'blog_id','blog_id');
     }
+
+    public function location(){
+        return $this->hasOne(Location::class,'location_id','location_id');
+    }
 }
