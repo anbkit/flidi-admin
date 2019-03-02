@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.37)
 # Database: flidi
-# Generation Time: 2019-03-02 05:14:36 +0000
+# Generation Time: 2019-03-02 06:40:32 +0000
 # ************************************************************
 
 
@@ -158,6 +158,51 @@ CREATE TABLE `likes` (
 
 
 
+# Dump of table locations
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `locations`;
+
+CREATE TABLE `locations` (
+  `location_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `location_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `address` text COLLATE utf8_unicode_ci NOT NULL,
+  `province_id` int(10) unsigned NOT NULL,
+  `image` text COLLATE utf8_unicode_ci NOT NULL,
+  `detail` text COLLATE utf8_unicode_ci NOT NULL,
+  `longitude` double NOT NULL,
+  `latitude` double NOT NULL,
+  `rate_total` float NOT NULL DEFAULT '0',
+  `rating` float DEFAULT '0',
+  `total_user` int(11) DEFAULT '0',
+  `total_blog` int(11) DEFAULT NULL,
+  `rate_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `status` smallint(1) DEFAULT '1',
+  `search_pid` int(10) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `version` int(10) unsigned DEFAULT '0',
+  PRIMARY KEY (`location_id`),
+  KEY `province_id` (`province_id`),
+  KEY `hack_province_id` (`search_pid`),
+  CONSTRAINT `location_province_fk` FOREIGN KEY (`province_id`) REFERENCES `provinces` (`province_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+LOCK TABLES `locations` WRITE;
+/*!40000 ALTER TABLE `locations` DISABLE KEYS */;
+
+INSERT INTO `locations` (`location_id`, `location_name`, `description`, `address`, `province_id`, `image`, `detail`, `longitude`, `latitude`, `rate_total`, `rating`, `total_user`, `total_blog`, `rate_count`, `status`, `search_pid`, `created_at`, `updated_at`, `version`)
+VALUES
+	(1,'Nhà thờ Đức Bà','Tourist travel across the world for mainly for three reasons - To Know history, to discover new places and lastly for Spiritual reason. While travelling to Vietnam and you wish to visit a cathedral then Duc Ba Church in the Ho Chi Minh City is the best option for you where you need to be in a boat to visit the church. It is really a good place for just experiencing a spiritual site, along with finding eternal peace here by praying for some time. Its official name is Saigon Notre-Dame Cathedral Basilica which is lengthy to Pronounce.','01 Công xã Paris, phường Bến Nghé, quận 1',1,'[\"locations\\/February2019\\/Sr2W5ue7bzwsthCiM9ry.jpeg\",\"locations\\/February2019\\/nwzKuv3zaKsSh3KZLtbP.jpg\",\"locations\\/February2019\\/xYkwdiroMMFTiLTJgoSM.png\",\"locations\\/February2019\\/IwYEzHmmJBbyEHEfTycU.jpg\",\"locations\\/February2019\\/p3Wp0sJ7XsPJfFqsPm1j.png\"]','Tourist travel across the world for mainly for three reasons - To Know history, to discover new places and lastly for Spiritual reason. While travelling to Vietnam and you wish to visit a cathedral then Duc Ba Church in the Ho Chi Minh City is the best option for you where you need to be in a boat to visit the church. It is really a good place for just experiencing a spiritual site, along with finding eternal peace here by praying for some time. Its official name is Saigon Notre-Dame Cathedral Basilica which is lengthy to Pronounce.',106.69916534423828,10.779855728149414,4.5,1.75,2,3,1,1,1,'2018-08-22 03:14:00','2019-02-17 14:53:09',1),
+	(2,'Bitexco','Bitexco Financial Tower (Vietnamese: Tháp Tài chính Bitexco) is a skyscraper in Ho Chi Minh City, Vietnam. At its completion in 2010, it became the tallest building in Vietnam and kept this status until January 2011, when it was surpassed by Keangnam Hanoi Landmark Tower. With 68 floors above ground and three basements, the building has a height of 262.5 metres (861 ft), making it the second tallest building in the city, fifth tallest in Vietnam, and the 263rd tallest in the world, as of the beginning of 2018.','02 Hải Triều, Quận 1',1,'[\"locations\\/February2019\\/Sr2W5ue7bzwsthCiM9ry.jpeg\",\"locations\\/February2019\\/nwzKuv3zaKsSh3KZLtbP.jpg\",\"locations\\/February2019\\/xYkwdiroMMFTiLTJgoSM.png\"]','Bitexco Financial Tower (Vietnamese: Tháp Tài chính Bitexco) is a skyscraper in Ho Chi Minh City, Vietnam. At its completion in 2010, it became the tallest building in Vietnam and kept this status until January 2011, when it was surpassed by Keangnam Hanoi Landmark Tower. With 68 floors above ground and three basements, the building has a height of 262.5 metres (861 ft), making it the second tallest building in the city, fifth tallest in Vietnam, and the 263rd tallest in the world, as of the beginning of 2018.[3]\n\nThe tower is owned by Bitexco Group, a Vietnamese multi-industry corporation, with a focus on real estate development. The building also houses the Ho Chi Minh City office of Bitexco Group, while its headquarters are in Hanoi.[4]\n\nThe tower was designed by Carlos Zapata, Design Principal and Founder of Carlos Zapata Studio, with French company AREP as architect of record. Designer Zapata, who was born in Venezuela but is based in New York City, drew inspiration for this skyscraper\'s unique shape from Vietnam\'s national flower, the Lotus.[5]\n\nThe tower was officially inaugurated on October 31, 2010. In 2013, CNN.com named the Bitexco Financial Tower one of the 25 Great Skyscraper Icons of Construction.[6] And in 2015, Thrillist.com named the Bitexco Financial Tower the #2 Coolest Skyscraper in the World.',106.704545,10.771845,3.5,NULL,NULL,NULL,1,1,1,'2018-12-15 08:57:30','2019-02-14 19:42:43',1),
+	(3,'Bưu điện trung tâm Sài Gòn','The Ho Chi Minh City Post Office, or the Saigon Central Post Office (Vietnamese: Bưu điện Trung tâm Sài Gòn, French: Poste centrale de Saïgon) is a post office in the downtown Ho Chi Minh City, near Saigon Notre-Dame Basilica, the city\'s cathedral. The building was constructed when Vietnam was part of French Indochina in the late 19th century. It counts with Gothic, Renaissance and French influences. It was constructed between 1886-1891 and is now a tourist attraction.[1]\nSaigon Central Post Office in 1895','Số 125 Công xã Paris, Bến Nghé, Quận 1',1,'[\"locations\\/February2019\\/Sr2W5ue7bzwsthCiM9ry.jpeg\",\"locations\\/February2019\\/nwzKuv3zaKsSh3KZLtbP.jpg\",\"locations\\/February2019\\/xYkwdiroMMFTiLTJgoSM.png\"]','The Ho Chi Minh City Post Office, or the Saigon Central Post Office (Vietnamese: Bưu điện Trung tâm Sài Gòn, French: Poste centrale de Saïgon) is a post office in the downtown Ho Chi Minh City, near Saigon Notre-Dame Basilica, the city\'s cathedral. The building was constructed when Vietnam was part of French Indochina in the late 19th century. It counts with Gothic, Renaissance and French influences. It was constructed between 1886-1891 and is now a tourist attraction.[1]\nSaigon Central Post Office in 1895\n\nIt was designed by Alfred Foulhoux,[2] but is often erroneously credited as being the work of Gustave Eiffel or a collaboration between Foulhoux and Hanoi-based Auguste Henri Vildieu. As translated by the historian Tim Doling, the journal Architecte constructeur: Revue du monde architectural et artistique of 15 September 1891 commented: “The inauguration the new Saigon Post Office, which was held on July 14, had been postponed until the return of the Governor General. This monument, adorned with a most artistic façade, is particularly well laid out and well equipped for the different services to which it is intended; it does the greatest honour to the skill and talent of the distinguished Chief Architect of the Colony, M. Foulhoux.”[3]\n\nInside the Saigon Central Post office of special note are two painted maps that were created just after the post office was built, the first one located on the left side of the building is a map of Southern Vietnam and Cambodia titled Lignes telegraphiques du Sud Vietnam et Cambodge 1892 which translates to \"Telegraphic lines of Southern Vietnam and Cambodia 1892\". The second map of greater Saigon is titled Saigon et ses environs 1892 that translates as \"Saigon and its surroundings 1892\".',106.70098,10.77653,0,NULL,NULL,NULL,0,1,1,'2018-12-16 06:53:16','2019-02-14 19:42:42',0),
+	(4,'Dinh Độc Lập','Independence Palace (Dinh Độc Lập), also known as Reunification Palace (Vietnamese: Dinh Thống Nhất), built on the site of the former Norodom Palace, is a landmark in Ho Chi Minh City, Vietnam. It was designed by architect Ngô Viết Thụ and was the home and workplace of the President of South Vietnam during the Vietnam War. It was the site of the end of the Vietnam War during the Fall of Saigon on 30 April 1975, when a North Vietnamese Army tank crashed through its gates.','135 Nam Kỳ Khởi Nghĩa, phường Bến Nghé, quận 1',1,'[\"locations\\/February2019\\/Sr2W5ue7bzwsthCiM9ry.jpeg\",\"locations\\/February2019\\/nwzKuv3zaKsSh3KZLtbP.jpg\",\"locations\\/February2019\\/xYkwdiroMMFTiLTJgoSM.png\"]','In 1858, France launched an attack on Đà Nẵng, starting its invasion of Vietnam. In 1867, France completed its conquest of southern Vietnam (Cochinchina), comprising the provinces of Biên Hòa, Gia Định, Định Tường, Vĩnh Long, An Giang, and Hà Tiên. To consolidate the newly established colony, on 23 February 1868, Pierre-Paul de La Grandière, Governor of Cochinchina, held a ceremony to lay the foundation stone of a new palace to replace the old wooden palace built in 1863. The new Governor\'s Palace was designed by Achille-Antoine Hermitte, who was also the architect of the Hong Kong City Hall. The first cubic stone, measuring 50 cm along each edge, with indentations containing French gold and silver coins bearing Napoleon III\'s effigy, came from Biên Hòa.The complex covered an area of 12 hectares, including a palace with an 80-meter-wide façade, a guest-chamber capable of accommodating 800 people, with spacious gardens covered by green trees and a lawn. Most of the building materials were imported from France. Owing to the Franco-Prussian War of 1870, construction fell behind schedule and was not completed until 1873. The palace was named Norodom Palace after the then king of Cambodia, Norodom (1834–1904). The avenue in front of the palace bore the same name. From 1871 to 1887, the palace was used by the French Governor of Cochinchina (Gouverneur de la Cochinchine); therefore, it was referred to as the Governor’s Palace. From 1887 to 1945, all Governors-General of French Indochina used the palace as their residence and office. The office of the Cochinchinese Governors was relocated to a nearby villa.',106.696105,10.777749,0,NULL,NULL,NULL,0,1,1,'2018-12-16 06:55:00','2019-02-14 12:40:54',0);
+
+/*!40000 ALTER TABLE `locations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 # Dump of table media_gallery
 # ------------------------------------------------------------
 
@@ -265,6 +310,31 @@ VALUES
 UNLOCK TABLES;
 
 
+# Dump of table roles
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `roles`;
+
+CREATE TABLE `roles` (
+  `role_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`role_id`),
+  UNIQUE KEY `UKname` (`name`) USING BTREE,
+  UNIQUE KEY `UK_nb4h0p6txrmfc0xbrd1kglp9t` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+LOCK TABLES `roles` WRITE;
+/*!40000 ALTER TABLE `roles` DISABLE KEYS */;
+
+INSERT INTO `roles` (`role_id`, `name`)
+VALUES
+	(2,'ROLE_ADMIN'),
+	(1,'ROLE_USER');
+
+/*!40000 ALTER TABLE `roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 # Dump of table user_meta
 # ------------------------------------------------------------
 
@@ -322,6 +392,50 @@ VALUES
 	(1,2);
 
 /*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table users
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `users`;
+
+CREATE TABLE `users` (
+  `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` int(6) DEFAULT NULL,
+  `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `first_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `last_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `avatar` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `active` tinyint(1) DEFAULT '1',
+  `last_login` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `version` int(10) unsigned DEFAULT '0',
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `UKusername` (`username`) USING BTREE,
+  UNIQUE KEY `UKemail` (`email`) USING BTREE,
+  UNIQUE KEY `UK_sx468g52bpetvlad2j9y0lptc` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+
+INSERT INTO `users` (`user_id`, `group_id`, `username`, `password`, `email`, `first_name`, `last_name`, `avatar`, `active`, `last_login`, `created_at`, `updated_at`, `version`)
+VALUES
+	(1,NULL,'daitran','$2a$10$aMhopqMrvBzvJDY4y/z5M.ULYcW.1OkF4XmNtCnrwJRAJ9IqqA.26','daitq@gmail.com','David','Tran','',1,'2018-08-21 15:08:07','2018-08-21 08:08:08','2018-12-14 15:03:35',3),
+	(2,NULL,'quocdaitran','$2a$10$2EKkMppq.pCxLN46/9xqceb5iCVrNUiX8YBKpXU39jZj..xk.Zj4K','daitran@gmail.com','Dai','Tran',NULL,1,'2018-12-08 14:25:29','2018-12-08 07:25:29','2018-12-08 07:29:00',0),
+	(3,NULL,'quocdaitran1','$2a$10$HP9aorCUNCGrRBk6XDMJK.aKGWIYAWiupX9W6jul2lGXtz0I4fONW','daitran1@gmail.com','Dai','Tran',NULL,1,'2018-12-08 14:29:26','2018-12-08 07:29:26','2018-12-08 07:29:26',0),
+	(4,NULL,'quocdaitran2','$2a$10$TCQHWYKzIlxvStxG1X6AxOoGPBUMutNtC0iU3pxBISsLkgjoViGQ.','daitran2@gmail.com','Dai','Tran',NULL,0,'2018-12-08 14:30:19','2018-12-08 07:30:19','2018-12-08 07:30:19',0),
+	(5,NULL,'quocdaitran294','$2a$10$paj.o.f1otC9k6aGZ94PBODh1c90QAziSqmDTtWqghaSO6nkS7ow2','daitran693@gmail.com','Dai','Tran',NULL,1,'2018-12-08 14:34:19','2018-12-08 07:34:19','2018-12-08 07:34:19',0),
+	(6,NULL,'quocdaitran107','$2a$10$COdNi6ktQnPE6tYaddIJues3tQpwArHUowj0qpj08D1FM8qGwzzty','daitran710@gmail.com','Dai','Tran',NULL,1,'2018-12-16 14:18:03','2018-12-16 07:18:03','2018-12-16 07:18:03',0),
+	(7,NULL,'quocdaitran867','$2a$10$.NBo2XQy7TcXunhnD4eENec5OMAPMmoEw9SUgGmWoRVzY3HMTBIQm','daitran762@gmail.com','Dai','Tran',NULL,1,'2018-12-16 14:48:25','2018-12-16 07:48:25','2018-12-16 07:48:25',0),
+	(8,NULL,'annguyen','$2a$10$wLSRXYLtq/bDxy.uvbvs2uDLaTqjGpniHVvid584plGiHmjJT2sx2','tronganbk@gmail.com','nguyen ','van a','',1,'2018-12-16 14:52:36','2018-12-16 07:52:36','2018-12-16 07:52:36',0),
+	(9,NULL,'annguyen1','$2a$10$E1SC6U4QTNWx2iOdFmxpCuMN59WQXVkU6C5hoal865n5kZOqihwgu','trongan@outlook.com','An Nguyen','Nguyen','',1,'2018-12-16 14:53:34','2018-12-16 07:53:34','2018-12-16 07:53:34',0);
+
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
