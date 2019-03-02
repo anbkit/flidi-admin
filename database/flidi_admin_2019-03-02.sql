@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.37)
 # Database: flidi_admin
-# Generation Time: 2019-03-02 05:10:46 +0000
+# Generation Time: 2019-03-02 05:51:10 +0000
 # ************************************************************
 
 
@@ -219,6 +219,36 @@ CREATE TABLE `districts` (
 
 
 
+# Dump of table locations
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `locations`;
+
+CREATE TABLE `locations` (
+  `location_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `location_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `address` text COLLATE utf8_unicode_ci NOT NULL,
+  `province_id` int(10) unsigned NOT NULL,
+  `image` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `detail` text COLLATE utf8_unicode_ci NOT NULL,
+  `longitude` double NOT NULL,
+  `latitude` double NOT NULL,
+  `rate_total` float NOT NULL DEFAULT '0',
+  `rate_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `status` smallint(1) DEFAULT '1',
+  `search_pid` int(10) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `version` int(10) unsigned DEFAULT '0',
+  PRIMARY KEY (`location_id`),
+  KEY `province_id` (`province_id`),
+  KEY `hack_province_id` (`search_pid`),
+  CONSTRAINT `location_province_fk` FOREIGN KEY (`province_id`) REFERENCES `provinces` (`province_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 # Dump of table menu_items
 # ------------------------------------------------------------
 
@@ -269,6 +299,241 @@ VALUES
 UNLOCK TABLES;
 
 
+# Dump of table menus
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `menus`;
+
+CREATE TABLE `menus` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `menus_name_unique` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `menus` WRITE;
+/*!40000 ALTER TABLE `menus` DISABLE KEYS */;
+
+INSERT INTO `menus` (`id`, `name`, `created_at`, `updated_at`)
+VALUES
+	(1,'admin','2018-12-22 07:26:20','2018-12-22 07:26:20');
+
+/*!40000 ALTER TABLE `menus` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table migrations
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `migrations`;
+
+CREATE TABLE `migrations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `migrations` WRITE;
+/*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
+
+INSERT INTO `migrations` (`id`, `migration`, `batch`)
+VALUES
+	(1,'2014_10_12_000000_create_users_table',1),
+	(2,'2014_10_12_100000_create_password_resets_table',1),
+	(3,'2016_01_01_000000_add_voyager_user_fields',1),
+	(4,'2016_01_01_000000_create_data_types_table',1),
+	(5,'2016_05_19_173453_create_menu_table',1),
+	(6,'2016_10_21_190000_create_roles_table',1),
+	(7,'2016_10_21_190000_create_settings_table',1),
+	(8,'2016_11_30_135954_create_permission_table',1),
+	(9,'2016_11_30_141208_create_permission_role_table',1),
+	(10,'2016_12_26_201236_data_types__add__server_side',1),
+	(11,'2017_01_13_000000_add_route_to_menu_items_table',1),
+	(12,'2017_01_14_005015_create_translations_table',1),
+	(13,'2017_01_15_000000_make_table_name_nullable_in_permissions_table',1),
+	(14,'2017_03_06_000000_add_controller_to_data_types_table',1),
+	(15,'2017_04_21_000000_add_order_to_data_rows_table',1),
+	(16,'2017_07_05_210000_add_policyname_to_data_types_table',1),
+	(17,'2017_08_05_000000_add_group_to_settings_table',1),
+	(18,'2017_11_26_013050_add_user_role_relationship',1),
+	(19,'2017_11_26_015000_create_user_roles_table',1),
+	(20,'2018_03_11_000000_add_user_settings',1),
+	(21,'2018_03_14_000000_add_details_to_data_types_table',1),
+	(22,'2018_03_16_000000_make_settings_value_nullable',1);
+
+/*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table password_resets
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `password_resets`;
+
+CREATE TABLE `password_resets` (
+  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  KEY `password_resets_email_index` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+# Dump of table permission_role
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `permission_role`;
+
+CREATE TABLE `permission_role` (
+  `permission_id` int(10) unsigned NOT NULL,
+  `role_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`permission_id`,`role_id`),
+  KEY `permission_role_permission_id_index` (`permission_id`),
+  KEY `permission_role_role_id_index` (`role_id`),
+  CONSTRAINT `permission_role_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `permission_role_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `permission_role` WRITE;
+/*!40000 ALTER TABLE `permission_role` DISABLE KEYS */;
+
+INSERT INTO `permission_role` (`permission_id`, `role_id`)
+VALUES
+	(1,1),
+	(2,1),
+	(3,1),
+	(4,1),
+	(5,1),
+	(6,1),
+	(7,1),
+	(8,1),
+	(9,1),
+	(10,1),
+	(11,1),
+	(12,1),
+	(13,1),
+	(14,1),
+	(15,1),
+	(16,1),
+	(17,1),
+	(18,1),
+	(19,1),
+	(20,1),
+	(21,1),
+	(22,1),
+	(23,1),
+	(24,1),
+	(25,1),
+	(26,1),
+	(27,1),
+	(28,1),
+	(29,1),
+	(30,1),
+	(31,1),
+	(32,1),
+	(33,1),
+	(34,1),
+	(35,1),
+	(36,1),
+	(37,1),
+	(38,1),
+	(39,1),
+	(40,1),
+	(41,1),
+	(42,1),
+	(43,1),
+	(44,1),
+	(45,1),
+	(46,1),
+	(47,1),
+	(48,1),
+	(49,1),
+	(50,1),
+	(51,1);
+
+/*!40000 ALTER TABLE `permission_role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table permissions
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `permissions`;
+
+CREATE TABLE `permissions` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `key` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `table_name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `permissions_key_index` (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `permissions` WRITE;
+/*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
+
+INSERT INTO `permissions` (`id`, `key`, `table_name`, `created_at`, `updated_at`)
+VALUES
+	(1,'browse_admin',NULL,'2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(2,'browse_bread',NULL,'2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(3,'browse_database',NULL,'2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(4,'browse_media',NULL,'2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(5,'browse_compass',NULL,'2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(6,'browse_menus','menus','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(7,'read_menus','menus','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(8,'edit_menus','menus','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(9,'add_menus','menus','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(10,'delete_menus','menus','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(11,'browse_roles','roles','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(12,'read_roles','roles','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(13,'edit_roles','roles','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(14,'add_roles','roles','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(15,'delete_roles','roles','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(16,'browse_users','users','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(17,'read_users','users','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(18,'edit_users','users','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(19,'add_users','users','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(20,'delete_users','users','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(21,'browse_settings','settings','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(22,'read_settings','settings','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(23,'edit_settings','settings','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(24,'add_settings','settings','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(25,'delete_settings','settings','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(26,'browse_hooks',NULL,'2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(27,'browse_wards','wards','2018-12-22 07:52:39','2018-12-22 07:52:39'),
+	(28,'read_wards','wards','2018-12-22 07:52:39','2018-12-22 07:52:39'),
+	(29,'edit_wards','wards','2018-12-22 07:52:39','2018-12-22 07:52:39'),
+	(30,'add_wards','wards','2018-12-22 07:52:39','2018-12-22 07:52:39'),
+	(31,'delete_wards','wards','2018-12-22 07:52:39','2018-12-22 07:52:39'),
+	(32,'browse_districts','districts','2018-12-22 08:05:13','2018-12-22 08:05:13'),
+	(33,'read_districts','districts','2018-12-22 08:05:13','2018-12-22 08:05:13'),
+	(34,'edit_districts','districts','2018-12-22 08:05:13','2018-12-22 08:05:13'),
+	(35,'add_districts','districts','2018-12-22 08:05:13','2018-12-22 08:05:13'),
+	(36,'delete_districts','districts','2018-12-22 08:05:13','2018-12-22 08:05:13'),
+	(37,'browse_provinces','provinces','2018-12-22 08:09:07','2018-12-22 08:09:07'),
+	(38,'read_provinces','provinces','2018-12-22 08:09:07','2018-12-22 08:09:07'),
+	(39,'edit_provinces','provinces','2018-12-22 08:09:07','2018-12-22 08:09:07'),
+	(40,'add_provinces','provinces','2018-12-22 08:09:07','2018-12-22 08:09:07'),
+	(41,'delete_provinces','provinces','2018-12-22 08:09:07','2018-12-22 08:09:07'),
+	(42,'browse_locations','locations','2018-12-25 06:42:22','2018-12-25 06:42:22'),
+	(43,'read_locations','locations','2018-12-25 06:42:22','2018-12-25 06:42:22'),
+	(44,'edit_locations','locations','2018-12-25 06:42:22','2018-12-25 06:42:22'),
+	(45,'add_locations','locations','2018-12-25 06:42:22','2018-12-25 06:42:22'),
+	(46,'delete_locations','locations','2018-12-25 06:42:22','2018-12-25 06:42:22'),
+	(47,'browse_web_users','web_users','2018-12-28 08:13:47','2018-12-28 08:13:47'),
+	(48,'read_web_users','web_users','2018-12-28 08:13:47','2018-12-28 08:13:47'),
+	(49,'edit_web_users','web_users','2018-12-28 08:13:47','2018-12-28 08:13:47'),
+	(50,'add_web_users','web_users','2018-12-28 08:13:47','2018-12-28 08:13:47'),
+	(51,'delete_web_users','web_users','2018-12-28 08:13:47','2018-12-28 08:13:47');
+
+/*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 # Dump of table provinces
 # ------------------------------------------------------------
 
@@ -290,6 +555,91 @@ CREATE TABLE `provinces` (
 
 
 
+# Dump of table roles
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `roles`;
+
+CREATE TABLE `roles` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `display_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `roles_name_unique` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `roles` WRITE;
+/*!40000 ALTER TABLE `roles` DISABLE KEYS */;
+
+INSERT INTO `roles` (`id`, `name`, `display_name`, `created_at`, `updated_at`)
+VALUES
+	(1,'admin','Administrator','2018-12-22 07:26:20','2018-12-22 07:26:20'),
+	(2,'user','Normal User','2018-12-22 07:26:20','2018-12-22 07:26:20');
+
+/*!40000 ALTER TABLE `roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table settings
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `settings`;
+
+CREATE TABLE `settings` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `key` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `display_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` text COLLATE utf8mb4_unicode_ci,
+  `details` text COLLATE utf8mb4_unicode_ci,
+  `type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order` int(11) NOT NULL DEFAULT '1',
+  `group` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `settings_key_unique` (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `settings` WRITE;
+/*!40000 ALTER TABLE `settings` DISABLE KEYS */;
+
+INSERT INTO `settings` (`id`, `key`, `display_name`, `value`, `details`, `type`, `order`, `group`)
+VALUES
+	(1,'site.title','Site Title','CMS Flidi','','text',1,'Site'),
+	(2,'site.description','Site Description','CMS Flidi','','text',2,'Site'),
+	(3,'site.logo','Site Logo','','','image',3,'Site'),
+	(4,'site.google_analytics_tracking_id','Google Analytics Tracking ID',NULL,'','text',4,'Site'),
+	(5,'admin.bg_image','Admin Background Image','','','image',5,'Admin'),
+	(6,'admin.title','Admin Title','Flidi','','text',1,'Admin'),
+	(7,'admin.description','Admin Description','Welcome to Voyager. The Missing Admin for Laravel','','text',2,'Admin'),
+	(8,'admin.loader','Admin Loader','','','image',3,'Admin'),
+	(9,'admin.icon_image','Admin Icon Image','','','image',4,'Admin'),
+	(10,'admin.google_analytics_client_id','Google Analytics Client ID (used for admin dashboard)',NULL,'','text',1,'Admin');
+
+/*!40000 ALTER TABLE `settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table translations
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `translations`;
+
+CREATE TABLE `translations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `table_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `column_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `foreign_key` int(10) unsigned NOT NULL,
+  `locale` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `translations_table_name_column_name_foreign_key_locale_unique` (`table_name`,`column_name`,`foreign_key`,`locale`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
 # Dump of table user_roles
 # ------------------------------------------------------------
 
@@ -305,6 +655,40 @@ CREATE TABLE `user_roles` (
   CONSTRAINT `user_roles_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+
+# Dump of table users
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `users`;
+
+CREATE TABLE `users` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `role_id` int(10) unsigned DEFAULT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `avatar` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT 'users/default.png',
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `settings` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_email_unique` (`email`),
+  KEY `users_role_id_foreign` (`role_id`),
+  CONSTRAINT `users_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+
+INSERT INTO `users` (`id`, `role_id`, `name`, `email`, `avatar`, `email_verified_at`, `password`, `remember_token`, `settings`, `created_at`, `updated_at`)
+VALUES
+	(1,1,'Flidi Admin','admin@flidi.com','users/default.png',NULL,'$2y$10$CV5wh8lqGVN2HOUeCG3ZruJ0wz79KFKueyDnMBnucZp5Rxszoz5ma',NULL,NULL,'2018-12-22 07:27:46','2018-12-22 07:27:46');
+
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table wards
