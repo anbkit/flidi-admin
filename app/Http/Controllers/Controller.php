@@ -17,8 +17,8 @@ class Controller extends BaseController
 
     public function getSettings(){
         $settings = [
-            'logo'=> url('/').'/storage/'+setting('site.logo'),
-            'background'=> url('/').'/storage/'+setting('site.background')
+            'logo'=> url('/').'/storage/'.setting('site.logo'),
+            'background'=> url('/').'/storage/'.setting('site.background')
         ];
         return response()->json($settings);
     }
