@@ -11,7 +11,6 @@ namespace App\Models;
 
 class Comment extends FlidiBaseModel{
     protected $table  = 'comments';
-    protected $connection = 'flidi2';
     protected $primaryKey = 'comment_id';
 
     public function user(){

@@ -11,7 +11,6 @@ namespace App\Models;
 
 class Blog extends FlidiBaseModel{
     protected $table = 'blogs';
-    protected $connection = 'flidi2';
     public $primaryKey = 'blog_id';
 
     public function user(){
