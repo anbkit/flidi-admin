@@ -13,4 +13,13 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+
+    public function getSettings(){
+        $settings = [
+            'logo'=>setting('site.logo'),
+            'background'=>setting('site.background')
+        ];
+        return response()->json($settings);
+    }
 }
